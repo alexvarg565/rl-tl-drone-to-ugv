@@ -1,16 +1,16 @@
 # Cross-Domain Reinforcement Learning for UAV-to-UGV Autonomous Navigation
 
-A reinforcement learning project comparing **PPO**, **SAC**, and **TD3** for autonomous navigation and testing whether policies trained in a UAV-style obstacle-navigation environment can transfer to a UGV navigation task.
+A reinforcement learning project comparing **PPO**, **SAC**, and **TD3** for simulated autonomous navigation. The project explores whether behavior learned in a UAV-style obstacle-navigation environment can transfer to a UGV navigation task.
 
-The project includes custom Gymnasium environments, training scripts, saved model checkpoints, and evaluation tools for comparing baseline and transfer-learning agents.
+This repository includes custom navigation environments, training scripts, transfer-learning utilities, and evaluation code for comparing baseline and transfer-learning agents.
 
 ---
 
 ## Overview
 
-Training autonomous agents from scratch can be expensive and time-consuming, especially when each platform or environment requires a separate training process. This project explores whether learned behavior from one navigation domain can help accelerate or improve learning in another.
+Training autonomous agents from scratch can be expensive and time-consuming, especially when each platform or environment requires separate tuning. This project investigates whether reinforcement learning experience from one navigation domain can help improve learning in another.
 
-The experiment follows three stages:
+The experiment follows three main stages:
 
 1. Train UAV navigation agents.
 2. Train baseline UGV agents from scratch.
@@ -23,22 +23,22 @@ The goal is to compare baseline UGV performance against UAV-to-UGV transfer-lear
 ## Key Features
 
 - Custom UAV and UGV navigation environments
-- PPO, SAC, and TD3 training pipelines
+- PPO, SAC, and TD3 training scripts
 - Baseline UGV training from scratch
 - UAV-to-UGV transfer-learning experiments
-- Saved model checkpoints for trained agents
-- Evaluation script for comparing reward, success rate, episode length, and out-of-bounds behavior
-- Reproducible Python project structure using Stable-Baselines3 and Gymnasium
+- Evaluation script for comparing trained agents
+- Results documentation for performance summaries
+- Clean Python project structure using Stable-Baselines3 and Gymnasium
 
 ---
 
-## Algorithms
+## Algorithms Compared
 
-| Algorithm | Type | Why It Was Used |
+| Algorithm | Type | Purpose in Project |
 |---|---|---|
-| PPO | On-policy | Stable baseline for policy optimization and navigation tasks |
-| SAC | Off-policy | Strong continuous-control algorithm with entropy-based exploration |
-| TD3 | Off-policy | Continuous-control method using twin critics and delayed policy updates |
+| PPO | On-policy | Stable policy optimization baseline for navigation tasks |
+| SAC | Off-policy | Continuous-control algorithm with entropy-based exploration |
+| TD3 | Off-policy | Continuous-control algorithm using twin critics and delayed policy updates |
 
 ---
 
@@ -52,11 +52,15 @@ rl-tl-drone-to-ugv/
 ├── .gitignore
 │
 ├── src/
+│   ├── __init__.py
+│   │
 │   ├── envs/
+│   │   ├── __init__.py
 │   │   ├── drone_env.py
 │   │   └── ugv_env.py
 │   │
 │   ├── train/
+│   │   ├── __init__.py
 │   │   ├── train_drone_ppo.py
 │   │   ├── train_drone_sac.py
 │   │   ├── train_drone_td3.py
@@ -68,26 +72,15 @@ rl-tl-drone-to-ugv/
 │   │   └── train_ugv_td3_transfer.py
 │   │
 │   ├── eval/
+│   │   ├── __init__.py
 │   │   └── evaluate_agent.py
 │   │
 │   └── models/
+│       ├── __init__.py
 │       └── transfer_utils.py
 │
-├── models/
-│   ├── drone_ppo.zip
-│   ├── drone_sac.zip
-│   ├── drone_td3.zip
-│   ├── ugv_ppo_baseline.zip
-│   ├── ugv_ppo_transfer.zip
-│   ├── ugv_sac.zip
-│   ├── ugv_sac_transfer.zip
-│   ├── ugv_td3.zip
-│   └── ugv_td3_transfer.zip
-│
 ├── results/
-├── configs/
-├── docs/
-└── tests/
+│   └── evaluation_summary.md
 ```
 
 ---
@@ -96,11 +89,11 @@ rl-tl-drone-to-ugv/
 
 ### UAV Environment
 
-The UAV environment represents an aerial obstacle-navigation task. The agent learns to move through a simulated space, avoid obstacles, remain within environment boundaries, and reach a target location.
+The UAV environment represents a simplified aerial obstacle-navigation task. The agent learns to move through a simulated space, avoid obstacles, stay within environment boundaries, and reach a target location.
 
 ### UGV Environment
 
-The UGV environment represents a ground-vehicle navigation task. The agent learns to navigate toward a goal while avoiding obstacles and minimizing invalid movement or out-of-bounds behavior.
+The UGV environment represents a simplified ground-vehicle navigation task. The agent learns to move toward a goal while avoiding obstacles and minimizing invalid or out-of-bounds movement.
 
 Both environments were designed to support comparison between agents trained from scratch and agents trained using transfer learning.
 
@@ -108,27 +101,23 @@ Both environments were designed to support comparison between agents trained fro
 
 ## Training Workflow
 
-The project uses three training phases:
-
 ### 1. UAV Training
 
 Train PPO, SAC, and TD3 agents in the UAV navigation environment.
 
 ### 2. UGV Baseline Training
 
-Train UGV agents from scratch to create baseline performance results.
+Train UGV agents from scratch to establish baseline performance.
 
 ### 3. UAV-to-UGV Transfer Training
 
-Use UAV-trained models or learned behavior as the starting point for UGV training.
-
-The full experiment ran for more than **2 million simulation timesteps** across multiple training configurations.
+Use UAV-trained behavior as a starting point for UGV training, then compare transfer-learning performance against baseline UGV training.
 
 ---
 
 ## Evaluation Metrics
 
-Agents were evaluated using:
+Agents are evaluated using:
 
 - Average reward
 - Success rate
@@ -137,13 +126,13 @@ Agents were evaluated using:
 - Baseline vs. transfer-learning performance
 - Training stability and convergence behavior
 
-These metrics were selected to measure both reward optimization and practical navigation behavior.
+These metrics are used to measure both reward optimization and practical navigation behavior.
 
 ---
 
 ## Results Summary
 
-PPO and SAC produced the most stable UGV navigation behavior in the tested environments. TD3 required additional tuning for more consistent navigation success.
+PPO and SAC produced the most stable navigation behavior in the tested environments. TD3 required additional tuning for more consistent success.
 
 | Agent | Training Type | Result Summary |
 |---|---|---|
@@ -154,9 +143,11 @@ PPO and SAC produced the most stable UGV navigation behavior in the tested envir
 | TD3 UGV Baseline | From scratch | Required additional tuning |
 | TD3 UGV Transfer | UAV-to-UGV transfer | Required additional tuning |
 
-### Main Finding
+For more detail, see:
 
-PPO and SAC were more reliable in this navigation setup, while TD3 was more sensitive to reward scaling, exploration behavior, and hyperparameter tuning.
+```text
+results/evaluation_summary.md
+```
 
 ---
 
@@ -175,7 +166,7 @@ cd rl-tl-drone-to-ugv
 python -m venv .venv
 ```
 
-Activate the environment.
+### 3. Activate the virtual environment
 
 On Windows PowerShell:
 
@@ -189,7 +180,7 @@ On macOS/Linux:
 source .venv/bin/activate
 ```
 
-### 3. Install dependencies
+### 4. Install dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -199,7 +190,7 @@ pip install -r requirements.txt
 
 ## Training Commands
 
-Train UAV agents:
+### Train UAV agents
 
 ```bash
 python -m src.train.train_drone_ppo
@@ -207,7 +198,7 @@ python -m src.train.train_drone_sac
 python -m src.train.train_drone_td3
 ```
 
-Train baseline UGV agents:
+### Train baseline UGV agents
 
 ```bash
 python -m src.train.train_ugv_baseline
@@ -215,7 +206,7 @@ python -m src.train.train_ugv_sac
 python -m src.train.train_ugv_td3
 ```
 
-Train transfer-learning UGV agents:
+### Train transfer-learning UGV agents
 
 ```bash
 python -m src.train.train_ugv_transfer
@@ -244,11 +235,9 @@ The evaluation script compares trained agents using reward, success rate, averag
 - Gymnasium
 - PyTorch
 - NumPy
-- Pandas
 - Matplotlib
 - TensorBoard
-- Docker
-- Linux / HPC workflows
+- Git / GitHub
 
 ---
 
@@ -262,8 +251,8 @@ Future work would require more realistic simulation, stronger environment random
 
 ## Future Improvements
 
-- Add environment visualizations or demo videos
 - Add training curves and evaluation plots to the `results/` folder
+- Add environment screenshots or demo videos
 - Run larger hyperparameter sweeps
 - Improve reward shaping and penalty scaling
 - Add more realistic obstacle layouts
