@@ -132,16 +132,16 @@ These metrics are used to measure both reward optimization and practical navigat
 
 ## Results Summary
 
-PPO and SAC produced the most stable navigation behavior in the tested environments. TD3 required additional tuning for more consistent success.
+PPO and SAC produced the most stable navigation behavior in the tested environments. TD3 required additional tuning for consistent navigation success.
 
-| Agent | Training Type | Result Summary |
-|---|---|---|
-| PPO UGV Baseline | From scratch | Stable navigation performance |
-| PPO UGV Transfer | UAV-to-UGV transfer | Stable navigation performance |
-| SAC UGV Baseline | From scratch | Stable navigation performance |
-| SAC UGV Transfer | UAV-to-UGV transfer | Stable navigation performance |
-| TD3 UGV Baseline | From scratch | Required additional tuning |
-| TD3 UGV Transfer | UAV-to-UGV transfer | Required additional tuning |
+| Agent | Training Type | Average Reward | Success Rate | Out-of-Bounds Rate |
+|---|---|---:|---:|---:|
+| PPO UGV Baseline | From scratch | 207.75 | 100.00% | 0.00% |
+| PPO UGV Transfer | UAV-to-UGV transfer | 207.67 | 100.00% | 0.00% |
+| SAC UGV Baseline | From scratch | 208.04 | 100.00% | 0.00% |
+| SAC UGV Transfer | UAV-to-UGV transfer | 208.13 | 100.00% | 0.00% |
+| TD3 UGV Baseline | From scratch | 37.58 | 0.00% | 100.00% |
+| TD3 UGV Transfer | UAV-to-UGV transfer | 37.58 | 0.00% | 100.00% |
 
 For more detail, see:
 
