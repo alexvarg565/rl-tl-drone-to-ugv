@@ -149,6 +149,24 @@ For more detail, see:
 results/evaluation_summary.md
 ```
 
+### Evaluation Plots
+
+#### Average Reward Comparison
+
+![Average Reward Comparison](results/plots/average_reward_comparison.png)
+
+#### Success Rate Comparison
+
+![Success Rate Comparison](results/plots/success_rate_comparison.png)
+
+#### Out-of-Bounds Rate Comparison
+
+![Out-of-Bounds Rate Comparison](results/plots/out_of_bounds_rate_comparison.png)
+
+#### Average Episode Length Comparison
+
+![Average Episode Length Comparison](results/plots/episode_length_comparison.png)
+
 ---
 
 ## Installation
