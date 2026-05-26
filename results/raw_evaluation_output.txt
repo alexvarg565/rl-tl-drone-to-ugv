@@ -1,0 +1,38 @@
+Evaluation Results
+------------------
+
+PPO UGV Baseline
+  Average Reward:        207.75
+  Success Rate:          100.00%
+  Avg Episode Length:    65.00
+  Out-of-Bounds Rate:    0.00%
+
+PPO UGV Transfer
+  Average Reward:        207.67
+  Success Rate:          100.00%
+  Avg Episode Length:    65.00
+  Out-of-Bounds Rate:    0.00%
+
+SAC UGV Baseline
+  Average Reward:        208.04
+  Success Rate:          100.00%
+  Avg Episode Length:    66.00
+  Out-of-Bounds Rate:    0.00%
+
+SAC UGV Transfer
+  Average Reward:        208.13
+  Success Rate:          100.00%
+  Avg Episode Length:    69.00
+  Out-of-Bounds Rate:    0.00%
+
+TD3 UGV Baseline
+  Average Reward:        37.58
+  Success Rate:          0.00%
+  Avg Episode Length:    76.00
+  Out-of-Bounds Rate:    100.00%
+
+TD3 UGV Transfer
+  Average Reward:        37.58
+  Success Rate:          0.00%
+  Avg Episode Length:    76.00
+  Out-of-Bounds Rate:    100.00%

@@ -1,6 +1,6 @@
 # Evaluation Summary
 
-This document summarizes the evaluation approach for the UAV-to-UGV reinforcement learning transfer project.
+This document summarizes the evaluation results for the UAV-to-UGV reinforcement learning transfer project.
 
 ## Evaluation Goal
 
@@ -23,20 +23,30 @@ Agents were evaluated using the following metrics:
 | Average Episode Length | Measures how long agents took to complete or fail an episode |
 | Out-of-Bounds Rate | Measures how often agents left the valid environment area |
 
-## Results Summary
+## Results
 
-| Agent | Training Type | General Result |
-|---|---|---|
-| PPO UGV Baseline | From scratch | Stable navigation performance |
-| PPO UGV Transfer | UAV-to-UGV transfer | Stable navigation performance |
-| SAC UGV Baseline | From scratch | Stable navigation performance |
-| SAC UGV Transfer | UAV-to-UGV transfer | Stable navigation performance |
-| TD3 UGV Baseline | From scratch | Required additional tuning |
-| TD3 UGV Transfer | UAV-to-UGV transfer | Required additional tuning |
+| Agent | Training Type | Average Reward | Success Rate | Avg Episode Length | Out-of-Bounds Rate |
+|---|---|---:|---:|---:|---:|
+| PPO UGV Baseline | From scratch | 207.75 | 100.00% | 65.00 | 0.00% |
+| PPO UGV Transfer | UAV-to-UGV transfer | 207.67 | 100.00% | 65.00 | 0.00% |
+| SAC UGV Baseline | From scratch | 208.04 | 100.00% | 66.00 | 0.00% |
+| SAC UGV Transfer | UAV-to-UGV transfer | 208.13 | 100.00% | 69.00 | 0.00% |
+| TD3 UGV Baseline | From scratch | 37.58 | 0.00% | 76.00 | 100.00% |
+| TD3 UGV Transfer | UAV-to-UGV transfer | 37.58 | 0.00% | 76.00 | 100.00% |
 
-## Main Finding
+## Main Findings
 
-PPO and SAC produced more stable navigation behavior in the tested environments. TD3 was more sensitive to tuning and required additional work to achieve consistent navigation success.
+PPO and SAC achieved stable UGV navigation performance in this evaluation, with both baseline and transfer-learning agents reaching a 100% success rate and 0% out-of-bounds rate.
+
+TD3 performed poorly in the tested setup. Both TD3 baseline and TD3 transfer agents had a 0% success rate and 100% out-of-bounds rate, suggesting that TD3 required additional tuning for this environment.
+
+The transfer-learning agents did not show a major improvement over the baseline agents in this evaluation. PPO baseline and PPO transfer produced nearly identical results, while SAC transfer had the highest average reward but a slightly longer average episode length.
+
+## Interpretation
+
+These results suggest that PPO and SAC were better suited for the current navigation environment and reward design. TD3 may have been more sensitive to hyperparameters, reward scaling, exploration behavior, or environment setup.
+
+The results also show that transfer learning was feasible in the project pipeline, but additional environment complexity, training variation, or transfer strategies may be needed to show clearer advantages over baseline training.
 
 ## Notes
 
