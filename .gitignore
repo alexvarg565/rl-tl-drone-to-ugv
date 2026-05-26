@@ -1,10 +1,25 @@
-__pycache__/
-*.pyc
+# Python environments
 .venv/
 venv/
-.env
+env/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
 .ipynb_checkpoints/
+
+# Logs and TensorBoard
 logs/
-models/
-results/
+*.tfevents*
+
+# OS/editor files
+.DS_Store
+Thumbs.db
 .vscode/
+
+# Optional: ignore large generated outputs
+models/*.zip
