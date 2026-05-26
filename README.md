@@ -2,7 +2,7 @@
 
 A reinforcement learning project comparing **PPO**, **SAC**, and **TD3** for simulated autonomous navigation. The project explores whether behavior learned in a UAV-style obstacle-navigation environment can transfer to a UGV navigation task.
 
-This repository includes custom navigation environments, training scripts, transfer-learning utilities, and evaluation code for comparing baseline and transfer-learning agents.
+This repository includes custom navigation environments, training scripts, transfer-learning utilities, evaluation code, result summaries, and generated plots for comparing baseline and transfer-learning agents.
 
 ---
 
@@ -27,7 +27,8 @@ The goal is to compare baseline UGV performance against UAV-to-UGV transfer-lear
 - Baseline UGV training from scratch
 - UAV-to-UGV transfer-learning experiments
 - Evaluation script for comparing trained agents
-- Results documentation for performance summaries
+- Results documentation with real evaluation metrics
+- Generated plots for reward, success rate, and out-of-bounds behavior
 - Clean Python project structure using Stable-Baselines3 and Gymnasium
 
 ---
@@ -73,14 +74,24 @@ rl-tl-drone-to-ugv/
 │   │
 │   ├── eval/
 │   │   ├── __init__.py
-│   │   └── evaluate_agent.py
+│   │   ├── evaluate_agent.py
+│   │   └── plot_results.py
 │   │
 │   └── models/
 │       ├── __init__.py
 │       └── transfer_utils.py
 │
 ├── results/
-│   └── evaluation_summary.md
+│   ├── evaluation_summary.md
+│   ├── evaluation_results.csv
+│   ├── raw_evaluation_output.txt
+│   └── plots/
+│       ├── average_reward_comparison.png
+│       └── success_vs_out_of_bounds.png
+│
+├── configs/
+├── docs/
+└── tests/
 ```
 
 ---
@@ -134,14 +145,14 @@ These metrics are used to measure both reward optimization and practical navigat
 
 PPO and SAC produced the most stable navigation behavior in the tested environments. TD3 required additional tuning for consistent navigation success.
 
-| Agent | Training Type | Average Reward | Success Rate | Out-of-Bounds Rate |
-|---|---|---:|---:|---:|
-| PPO UGV Baseline | From scratch | 207.75 | 100.00% | 0.00% |
-| PPO UGV Transfer | UAV-to-UGV transfer | 207.67 | 100.00% | 0.00% |
-| SAC UGV Baseline | From scratch | 208.04 | 100.00% | 0.00% |
-| SAC UGV Transfer | UAV-to-UGV transfer | 208.13 | 100.00% | 0.00% |
-| TD3 UGV Baseline | From scratch | 37.58 | 0.00% | 100.00% |
-| TD3 UGV Transfer | UAV-to-UGV transfer | 37.58 | 0.00% | 100.00% |
+| Agent | Training Type | Average Reward | Success Rate | Avg Episode Length | Out-of-Bounds Rate |
+|---|---|---:|---:|---:|---:|
+| PPO UGV Baseline | From scratch | 207.75 | 100.00% | 65.00 | 0.00% |
+| PPO UGV Transfer | UAV-to-UGV transfer | 207.67 | 100.00% | 65.00 | 0.00% |
+| SAC UGV Baseline | From scratch | 208.04 | 100.00% | 66.00 | 0.00% |
+| SAC UGV Transfer | UAV-to-UGV transfer | 208.13 | 100.00% | 69.00 | 0.00% |
+| TD3 UGV Baseline | From scratch | 37.58 | 0.00% | 76.00 | 100.00% |
+| TD3 UGV Transfer | UAV-to-UGV transfer | 37.58 | 0.00% | 76.00 | 100.00% |
 
 For more detail, see:
 
@@ -149,23 +160,27 @@ For more detail, see:
 results/evaluation_summary.md
 ```
 
-### Evaluation Plots
+---
 
-#### Average Reward Comparison
+## Evaluation Plots
+
+### Average Reward Comparison
 
 ![Average Reward Comparison](results/plots/average_reward_comparison.png)
 
-#### Success Rate Comparison
+### Success Rate vs. Out-of-Bounds Rate
 
-![Success Rate Comparison](results/plots/success_rate_comparison.png)
+![Success Rate vs. Out-of-Bounds Rate](results/plots/success_vs_out_of_bounds.png)
 
-#### Out-of-Bounds Rate Comparison
+---
 
-![Out-of-Bounds Rate Comparison](results/plots/out_of_bounds_rate_comparison.png)
+## Main Findings
 
-#### Average Episode Length Comparison
+PPO and SAC achieved stable UGV navigation performance in this evaluation, with both baseline and transfer-learning agents reaching a 100% success rate and 0% out-of-bounds rate.
 
-![Average Episode Length Comparison](results/plots/episode_length_comparison.png)
+TD3 performed poorly in the tested setup. Both TD3 baseline and TD3 transfer agents had a 0% success rate and 100% out-of-bounds rate, suggesting that TD3 required additional tuning for this environment.
+
+The transfer-learning agents did not show a major improvement over the baseline agents in this evaluation. PPO baseline and PPO transfer produced nearly identical results, while SAC transfer had the highest average reward but a slightly longer average episode length.
 
 ---
 
@@ -242,6 +257,12 @@ Run the evaluation script:
 python -m src.eval.evaluate_agent
 ```
 
+Generate evaluation plots:
+
+```bash
+python -m src.eval.plot_results
+```
+
 The evaluation script compares trained agents using reward, success rate, average episode length, and out-of-bounds behavior.
 
 ---
@@ -253,6 +274,7 @@ The evaluation script compares trained agents using reward, success rate, averag
 - Gymnasium
 - PyTorch
 - NumPy
+- Pandas
 - Matplotlib
 - TensorBoard
 - Git / GitHub
@@ -269,7 +291,6 @@ Future work would require more realistic simulation, stronger environment random
 
 ## Future Improvements
 
-- Add training curves and evaluation plots to the `results/` folder
 - Add environment screenshots or demo videos
 - Run larger hyperparameter sweeps
 - Improve reward shaping and penalty scaling
@@ -277,6 +298,7 @@ Future work would require more realistic simulation, stronger environment random
 - Add sensor-style observations
 - Compare additional transfer-learning strategies
 - Test policies in higher-fidelity simulation environments
+- Improve TD3 training stability through hyperparameter tuning
 
 ---
 
