@@ -8,64 +8,6 @@ RESULTS_DIR = os.path.join("results", "plots")
 CSV_PATH = os.path.join("results", "evaluation_results.csv")
 
 
-EVALUATION_RESULTS = [
-    {
-        "Agent": "PPO Baseline",
-        "Algorithm": "PPO",
-        "Training Type": "Baseline",
-        "Average Reward": 207.75,
-        "Success Rate": 100.00,
-        "Avg Episode Length": 65.00,
-        "Out-of-Bounds Rate": 0.00,
-    },
-    {
-        "Agent": "PPO Transfer",
-        "Algorithm": "PPO",
-        "Training Type": "Transfer",
-        "Average Reward": 207.67,
-        "Success Rate": 100.00,
-        "Avg Episode Length": 65.00,
-        "Out-of-Bounds Rate": 0.00,
-    },
-    {
-        "Agent": "SAC Baseline",
-        "Algorithm": "SAC",
-        "Training Type": "Baseline",
-        "Average Reward": 208.04,
-        "Success Rate": 100.00,
-        "Avg Episode Length": 66.00,
-        "Out-of-Bounds Rate": 0.00,
-    },
-    {
-        "Agent": "SAC Transfer",
-        "Algorithm": "SAC",
-        "Training Type": "Transfer",
-        "Average Reward": 208.13,
-        "Success Rate": 100.00,
-        "Avg Episode Length": 69.00,
-        "Out-of-Bounds Rate": 0.00,
-    },
-    {
-        "Agent": "TD3 Baseline",
-        "Algorithm": "TD3",
-        "Training Type": "Baseline",
-        "Average Reward": 37.58,
-        "Success Rate": 0.00,
-        "Avg Episode Length": 76.00,
-        "Out-of-Bounds Rate": 100.00,
-    },
-    {
-        "Agent": "TD3 Transfer",
-        "Algorithm": "TD3",
-        "Training Type": "Transfer",
-        "Average Reward": 37.58,
-        "Success Rate": 0.00,
-        "Avg Episode Length": 76.00,
-        "Out-of-Bounds Rate": 100.00,
-    },
-]
-
-
 def make_results_dataframe() -> pd.DataFrame:
     """Load previously recorded evaluation results from CSV."""
 
