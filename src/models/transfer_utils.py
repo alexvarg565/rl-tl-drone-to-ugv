@@ -24,7 +24,7 @@ def load_drone_ppo_weights_into_ugv(drone_model_path: str, ugv_env):
 
     ugv_model.policy.load_state_dict(
         drone_model.policy.state_dict(),
-        strict=False
+        strict=True
     )
 
     return ugv_model
@@ -44,7 +44,7 @@ def load_drone_sac_weights_into_ugv(drone_model_path: str, ugv_env):
 
     ugv_model.policy.load_state_dict(
         drone_model.policy.state_dict(),
-        strict=False
+        strict=True
     )
 
     return ugv_model
@@ -64,7 +64,7 @@ def load_drone_td3_weights_into_ugv(drone_model_path: str, ugv_env):
 
     ugv_model.policy.load_state_dict(
         drone_model.policy.state_dict(),
-        strict=False
+        strict=True
     )
 
     return ugv_model
