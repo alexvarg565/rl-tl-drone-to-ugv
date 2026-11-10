@@ -1,27 +1,39 @@
 # Evaluation Summary
 
-This document summarizes the evaluation results for the UAV-to-UGV reinforcement learning transfer project.
+This document summarizes the original evaluation results for the UAV-to-UGV reinforcement learning transfer project.
 
 ## Evaluation Goal
 
-The goal of evaluation was to compare UGV agents trained from scratch against UGV agents trained using UAV-to-UGV transfer learning.
+Compare the performance of UGV agents trained from scratch against UGV agents initialized using policy weights learned in the UAV environment.
 
-The project compared three reinforcement learning algorithms:
+The experiment evaluated:
 
-- PPO
-- SAC
-- TD3
+- Proximal Policy Optimization (PPO)
+- Soft Actor-Critic (SAC)
+- Twin Delayed DDPG (TD3)
 
-## Metrics
+Each algorithm was evaluated in both baseline and transfer-learning configurations.
 
-Agents were evaluated using the following metrics:
+## Evaluation Methodology
 
-| Metric | Purpose |
+The original evaluation used 10 episodes per agent with deterministic policy actions.
+
+Both navigation environments use a fixed starting position and goal, and do not introduce randomized obstacles or navigation scenarios.
+
+Consequently, repeated deterministic episodes primarily measure performance on the same navigation task rather than generalization across different environments.
+
+The results should be interpreted as historical fixed-scenario evaluation measurements.
+
+## Evaluation Metrics
+
+| Metric | Description |
 |---|---|
-| Average Reward | Measures overall task performance across evaluation episodes |
-| Success Rate | Measures how often the agent successfully reached the navigation goal |
-| Average Episode Length | Measures how long agents took to complete or fail an episode |
-| Out-of-Bounds Rate | Measures how often agents left the valid environment area |
+| Average Reward | Mean cumulative reward across evaluation episodes |
+| Success Rate | Percentage of episodes reaching the navigation goal |
+| Average Episode Length | Mean number of steps before an episode ends |
+| Out-of-Bounds Rate | Percentage of episodes terminating outside the valid environment boundary |
+
+These metrics provide different perspectives on agent behavior, including goal completion, efficiency, and failure conditions.
 
 ## Results
 
@@ -36,18 +48,117 @@ Agents were evaluated using the following metrics:
 
 ## Main Findings
 
-PPO and SAC achieved stable UGV navigation performance in this evaluation, with both baseline and transfer-learning agents reaching a 100% success rate and 0% out-of-bounds rate.
+### PPO
 
-TD3 performed poorly in the tested setup. Both TD3 baseline and TD3 transfer agents had a 0% success rate and 100% out-of-bounds rate, suggesting that TD3 required additional tuning for this environment.
+Both PPO agents successfully reached the goal in the original evaluation.
 
-The transfer-learning agents did not show a major improvement over the baseline agents in this evaluation. PPO baseline and PPO transfer produced nearly identical results, while SAC transfer had the highest average reward but a slightly longer average episode length.
+The baseline agent achieved an average reward of 207.75, compared with 207.67 for the transfer agent.
 
-## Interpretation
+Both configurations completed episodes in an average of 65 steps.
 
-These results suggest that PPO and SAC were better suited for the current navigation environment and reward design. TD3 may have been more sensitive to hyperparameters, reward scaling, exploration behavior, or environment setup.
+These results show nearly identical performance under the tested conditions, with no observable transfer advantage.
 
-The results also show that transfer learning was feasible in the project pipeline, but additional environment complexity, training variation, or transfer strategies may be needed to show clearer advantages over baseline training.
+### SAC
 
-## Notes
+Both SAC agents achieved 100% success rates without out-of-bounds failures.
 
-This project is a simulation-based research prototype. The environments are simplified and are intended for reinforcement learning experimentation, not real-world robotic deployment.
+The transfer agent recorded a slightly higher average reward of 208.13 compared with 208.04 for the baseline.
+
+However, the transfer agent required 69 steps on average compared with 66 for the baseline.
+
+The recorded differences are small and do not establish a meaningful performance improvement.
+
+### TD3
+
+Neither TD3 configuration reached the navigation goal during the recorded evaluation.
+
+Both agents had:
+
+- Average reward: 37.58
+- Success rate: 0%
+- Average episode length: 76 steps
+- Out-of-bounds rate: 100%
+
+These results indicate that the recorded TD3 policies did not successfully solve the tested navigation task.
+
+Possible factors to investigate include hyperparameter selection, exploration behavior, reward design, and training configuration.
+
+The current results do not establish which factor caused the failure.
+
+## Transfer-Learning Interpretation
+
+The original experiment successfully implemented policy-weight transfer and subsequent UGV training for PPO, SAC, and TD3.
+
+However, the recorded evaluation did not show a clear advantage from transfer learning.
+
+PPO and SAC transfer agents performed similarly to their respective baselines, while TD3 showed identical recorded results between baseline and transfer configurations.
+
+Successful parameter transfer verifies that learned model weights can be used to initialize the target policy. It does not by itself establish improved training speed, final performance, or generalization.
+
+## Evaluation Visualizations
+
+### Average Reward Comparison
+
+![Average Reward Comparison](plots/average_reward_comparison.png)
+
+### Baseline vs. Transfer Reward
+
+![Baseline vs. Transfer Reward](plots/baseline_vs_transfer_reward.png)
+
+### Success Rate Comparison
+
+![Success Rate Comparison](plots/success_rate_comparison.png)
+
+The plots are generated from the saved results CSV using `src/eval/plot_results.py`.
+
+## Limitations
+
+### Fixed Evaluation Scenario
+
+All agents were evaluated using fixed starting conditions and goals.
+
+The evaluation does not measure navigation performance across unseen environments.
+
+### Deterministic Episodes
+
+Repeated deterministic evaluations under identical conditions do not provide independent evidence of robustness or variability.
+
+### Limited Statistical Evidence
+
+The historical results do not include repeated independent training runs across multiple random seeds.
+
+Therefore, statistical significance and reliability across training runs cannot be established from this evaluation.
+
+### Simplified Environments
+
+The UAV and UGV environments use simplified two-dimensional movement models without obstacles, sensor uncertainty, or realistic robotic dynamics.
+
+### Reproducibility
+
+The original experiments do not have fully documented random seeds or exact historical dependency versions.
+
+The repository's automated tests verify current code behavior but do not independently reproduce the original training results.
+
+## Future Evaluation Improvements
+
+The next experimental phase will focus on:
+
+- Multiple independent training seeds
+- Randomized navigation environments
+- Unseen test scenarios
+- Learning curves and sample efficiency
+- Zero-shot transfer versus fine-tuning
+- Broader hyperparameter comparisons
+- Confidence intervals and performance variability
+
+These experiments will be reported separately from the original fixed-scenario results.
+
+## Conclusion
+
+The original experiments demonstrate a working implementation of UAV-to-UGV policy-weight transfer using PPO, SAC, and TD3.
+
+PPO and SAC successfully completed the fixed navigation task, while TD3 did not.
+
+No clear transfer-learning advantage was demonstrated by the historical evaluation.
+
+The results provide a baseline for future work involving more realistic navigation environments and stronger experimental methodology.
