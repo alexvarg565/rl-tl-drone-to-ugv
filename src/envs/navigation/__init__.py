@@ -1,5 +1,6 @@
 """Shared navigation scenarios and future vehicle environments."""
 
+from .drone import DroneNavigationEnv
 from .scenarios import (
     CircleObstacle,
     Scenario,
@@ -9,5 +10,6 @@ from .scenarios import (
 )
 
 __all__ = [
-    "CircleObstacle", "Scenario", "ScenarioConfig", "generate_scenario", "validate_scenario"
+    "CircleObstacle", "Scenario", "ScenarioConfig", "generate_scenario", "validate_scenario",
+    "DroneNavigationEnv",
 ]

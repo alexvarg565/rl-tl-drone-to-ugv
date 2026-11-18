@@ -50,10 +50,10 @@ to immutable tuples, and numeric geometry values are stored as floats.
 ### Checkpoint 2.1: Scenario Data and Validation
 
 This checkpoint implements scenario data, `validate_scenario(scenario, config)`,
-and random start/goal generation with fixed obstacles. Vehicle environments and
-runtime collision handling remain deferred. The navigation package uses NumPy
-for random sampling and has no Gymnasium dependency; dataclass values remain
-immutable Python tuples and floats.
+and random start/goal generation with fixed obstacles. Runtime collision
+handling remains deferred. The scenario module uses NumPy for random sampling
+and has no Gymnasium dependency; dataclass values remain immutable Python tuples
+and floats. Phase 2.2 adds a Gymnasium environment in the navigation package.
 
 - Coordinates are world-frame `(x, y)` pairs in meters. Bounds are separate
   `(minimum, maximum)` pairs for X and Y; each minimum must be strictly smaller
@@ -140,6 +140,97 @@ to the sampling algorithm or software environment.
 ## UAV Environment
 
 The new UAV environment will initially model two-dimensional movement.
+
+### Phase 2.2: DroneNavigationEnv
+
+`DroneNavigationEnv` is implemented in `src/envs/navigation/drone.py` and exported
+by `src.envs.navigation`. It leaves the original `DroneEnv` and experiments intact.
+It is a point-mass, obstacle-free environment with no rendering or sensor model.
+
+Constructor settings are keyword-only:
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `x_bounds`, `y_bounds` | `(-10.0, 10.0)` | Closed world intervals in meters |
+| `dt` | `0.1` | Seconds per step |
+| `max_acceleration` | `1.0` | Acceleration limit per axis, m/s² |
+| `max_axis_speed` | `2.0` | Speed limit on each axis, m/s |
+| `goal_radius` | `0.5` | Strict goal-distance threshold, meters |
+| `max_steps` | `200` | Episode step budget |
+| `scenario_config` | `ScenarioConfig()` | Shared initialization constraints |
+| `max_sampling_attempts` | `1000` | Start/goal pair sampling budget |
+
+Bounds must be finite and strictly ordered. Physical settings must be finite and
+positive, and budgets must be positive Python integers (not booleans). Constraints
+must be valid and leave a nonempty clearance-inset rectangle. Impossible random
+start/goal separation is reported by the generator on reset. Configurations must
+also permit finite float32 observation bounds and finite acceleration increments.
+Bounds and physical settings are intended to remain fixed for the instance.
+
+Physical state is `[x, y, vx, vy]`, integrated in float64. Actions are two finite
+real numbers with shape `(2,)`, representing normalized world-X/Y acceleration.
+Invalid shapes, nonnumeric, complex, boolean, NaN, and infinite actions raise
+`ValueError` without advancing the episode. Finite out-of-range actions are
+clipped to `[-1, 1]`. With clipped action `u`, each step uses:
+
+```text
+acceleration = max_acceleration * u
+velocity_next = clip(velocity + acceleration * dt, -max_axis_speed, max_axis_speed)
+position_next = position + velocity_next * dt
+```
+
+Zero action preserves existing velocity. Limits apply independently to X and Y,
+so maximum diagonal speed is `sqrt(2) * max_axis_speed`. There is no drag, gravity,
+attitude, altitude, or wind model.
+
+Observations are fresh float32 arrays `[x, y, vx, vy, goal_x, goal_y]`. Their
+`Box` bounds use the configured world bounds for goals, per-axis speed limits for
+velocities, and world bounds expanded by `max_axis_speed * dt` for positions.
+This includes a terminal position one step outside the world without clipping
+physical state. Bounds are rounded outward in float32 and remain fixed across
+resets. Observations retain physical units rather than applying normalization.
+
+`reset(seed=..., options=None)` calls Gymnasium's seeded reset, then passes
+`self.np_random` directly to `generate_scenario()`. `reset()` continues the RNG
+sequence; repeating the same seed replays it. Action-space sampling has its own
+seed. The environment can replay a fixed scenario through
+`reset(options={"scenario": scenario})`: it must pass shared validation, match
+the configured world bounds, and contain no obstacles. Fixed replay consumes no
+scenario-sampling randomness. Nonempty obstacles are rejected explicitly because
+valid initial clearance alone cannot prevent later collisions.
+
+Reset initializes zero velocity, step count zero, and the previous goal distance.
+It returns observation and info. `step()` requires a successful reset before the
+first step and after either termination or truncation. A failed reset also disables
+stepping until a reset succeeds. Starts already inside the goal radius are
+evaluated on the first step, allowing the shared scenario validation rules to stay
+unchanged. Unknown reset option keys are rejected.
+
+After movement, a position strictly outside the closed world terminates with
+boundary failure. Otherwise, a goal distance strictly less than `goal_radius`
+terminates with success. Boundary failure takes precedence over success, and
+termination takes precedence over step-limit truncation. The step limit is an
+external cutoff, not an intrinsic finite-horizon task. Clearance affects initial
+sampling and validation only; runtime boundary checks use the point position.
+Goal and boundary outcomes are evaluated at step endpoints; continuous goal
+crossing detection is not implemented.
+
+The initial reward preserves the original baseline coefficients:
+
+```text
+reward = 10 * (previous_distance - distance) - 0.01 * sum(clipped_action ** 2)
+reward += 100 on success, or -= 50 on boundary failure
+```
+
+Returned info includes `distance_to_goal` in meters, `success`, `out_of_bounds`,
+and `step_count`, including at reset. Changing `dt` changes the physical duration
+of an episode and cumulative per-step penalties; future timestep experiments
+should also review reward scaling and discount factors.
+
+The six observation meanings match the historical UAV but do not guarantee
+future UGV policy compatibility. Heading-based steering needs orientation state
+and has different action semantics. Shared units and coordinate frames support
+later representation-transfer experiments without requiring whole-policy copies.
 
 State variables include:
 
